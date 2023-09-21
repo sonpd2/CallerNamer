@@ -22,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private final String[] permissions = new String[]{
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.READ_CALL_LOG,
-            Manifest.permission.READ_CONTACTS
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
     };
     private ArrayList<String> notGrantedPermissions;
 
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        showRecordingNotification();
         specialPermissionRequester = new SpecialPermissionRequester(this);
         runtimePermissionRequester = new RuntimePermissionRequester(this);
 
@@ -120,5 +121,13 @@ public class MainActivity extends AppCompatActivity {
             GoingToSettingsSnackbar goingToSettingsSnackbar = new GoingToSettingsSnackbar(this, view);
             goingToSettingsSnackbar.showSnackbar("You must grant permissions in Settings!", "Settings");
         }
+    }
+
+    private void showRecordingNotification(){
+        Notification not = new Notification(R.drawable.icon, "Application started", System.currentTimeMillis());
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, main.class), Notification.FLAG_ONGOING_EVENT);        
+        not.flags = Notification.FLAG_ONGOING_EVENT;
+        not.setLatestEventInfo(this, "Application Name", "Application Description", contentIntent);
+        mNotificationManager.notify(1, not);
     }
 }
