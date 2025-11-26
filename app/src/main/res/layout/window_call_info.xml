@@ -4,75 +4,122 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/window_background">
+    android:background="@drawable/window_background"
+    android:paddingStart="@dimen/window_padding"
+    android:paddingEnd="@dimen/window_padding"
+    android:paddingTop="@dimen/window_padding_top"
+    android:paddingBottom="@dimen/window_padding_bottom"
+    android:elevation="8dp">
 
+    <!-- Close Button -->
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/close_button"
+        android:contentDescription="Đóng"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Phone Number (Large, Prominent) -->
     <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
+        android:id="@+id/number"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/number_text_view_margin"
-
-        android:text="Name"
-        android:textColor="@color/black"
-        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="@dimen/text_spacing"
+        android:gravity="center"
+        android:text="1234"
+        android:textColor="@color/primary_blue"
+        android:textSize="@dimen/number_text_size"
         android:textStyle="bold"
+        android:letterSpacing="0.1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/number_text_view_margin"
-        android:layout_marginBottom="8dp"
-        android:text="1234"
-        android:textColor="@color/black"
-        android:textSize="@dimen/number_text_size"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <!-- Divider -->
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/divider_height"
+        android:layout_marginTop="@dimen/text_spacing"
+        android:layout_marginBottom="@dimen/text_spacing"
+        android:background="@color/divider_color"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/number" />
 
+    <!-- Name (Bold, Primary) -->
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_spacing"
+        android:layout_marginBottom="@dimen/text_spacing"
+        android:gravity="center"
+        android:text="Tên người gọi"
+        android:textColor="@color/text_primary"
+        android:textSize="@dimen/name_text_size"
+        android:textStyle="bold"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <!-- Position -->
     <TextView
         android:id="@+id/position"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/cancel_button_margin"
-        android:layout_marginBottom="8dp"
-        android:text="Unknow"
-        android:textColor="@color/black"
-        android:textSize="@dimen/number_text_size"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/text_spacing"
+        android:layout_marginBottom="@dimen/text_spacing"
+        android:gravity="center"
+        android:text="Chức vụ"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/position_text_size"
+        android:maxLines="2"
+        android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/number"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/name" />
 
+    <!-- Company -->
     <TextView
         android:id="@+id/company"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/cancel_button_margin"
-        android:layout_marginBottom="8dp"
-        android:text="Unknow"
-        android:textColor="@color/black"
-        android:textSize="@dimen/number_text_size2"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/text_spacing"
+        android:layout_marginBottom="@dimen/text_spacing"
+        android:gravity="center"
+        android:text="Công ty"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/company_text_size"
+        android:maxLines="3"
+        android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/position" />
 
-    <Button
-        android:id="@+id/cancel"
-        android:layout_width="@dimen/cancel_button_size"
-        android:layout_height="@dimen/cancel_button_size"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="@dimen/cancel_button_margin"
-        android:background="@drawable/cross"
+    <!-- Email -->
+    <TextView
+        android:id="@+id/email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_spacing"
+        android:gravity="center"
+        android:text="Email"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/company"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

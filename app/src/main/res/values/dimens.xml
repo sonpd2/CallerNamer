@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="number_text_view_margin">30dp</dimen>
-    <dimen name="cancel_button_size">15dp</dimen>
-    <dimen name="cancel_button_margin">10dp</dimen>
-    <dimen name="number_text_size">20sp</dimen>
+    <dimen name="number_text_view_margin">16dp</dimen>
+    <dimen name="cancel_button_size">24dp</dimen>
+    <dimen name="cancel_button_margin">12dp</dimen>
+    <dimen name="number_text_size">22sp</dimen>
     <dimen name="number_text_size2">14sp</dimen>
     <dimen name="window_background_stroke_width">1dp</dimen>
-    <dimen name="window_background_radius">10dp</dimen>
+    <dimen name="window_background_radius">16dp</dimen>
+    
+    <!-- New dimensions -->
+    <dimen name="window_padding">20dp</dimen>
+    <dimen name="window_padding_top">24dp</dimen>
+    <dimen name="window_padding_bottom">20dp</dimen>
+    <dimen name="text_spacing">8dp</dimen>
+    <dimen name="name_text_size">20sp</dimen>
+    <dimen name="position_text_size">15sp</dimen>
+    <dimen name="company_text_size">13sp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="divider_margin">16dp</dimen>
 </resources>
