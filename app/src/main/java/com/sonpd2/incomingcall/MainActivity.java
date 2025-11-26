@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
@@ -44,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.READ_CALL_LOG,
             Manifest.permission.READ_CONTACTS,
             Manifest.permission.WRITE_CONTACTS,
-            Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+            Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+            Manifest.permission.POST_NOTIFICATIONS
     };
     private ArrayList<String> notGrantedPermissions;
 
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textCallLogStatus;
     private TextView textContactsStatus;
     private TextView textWriteContactsStatus;
+    private TextView textNotificationStatus;
     private TextView textSpecialStatus;
     private TextView textBatteryStatus;
     private Button btnRequestBatteryOptimization;
@@ -61,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Force light mode, disable dark mode
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        
         setContentView(R.layout.activity_main);
         
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
@@ -76,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         textCallLogStatus = findViewById(R.id.textCallLogStatus);
         textContactsStatus = findViewById(R.id.textContactsStatus);
         textWriteContactsStatus = findViewById(R.id.textWriteContactsStatus);
+        textNotificationStatus = findViewById(R.id.textNotificationStatus);
         textSpecialStatus = findViewById(R.id.textSpecialStatus);
         textBatteryStatus = findViewById(R.id.textBatteryStatus);
         btnRequestBatteryOptimization = findViewById(R.id.btnRequestBatteryOptimization);
@@ -175,6 +183,17 @@ public class MainActivity extends AppCompatActivity {
         checkPermissionStatus(Manifest.permission.READ_CALL_LOG, textCallLogStatus);
         checkPermissionStatus(Manifest.permission.READ_CONTACTS, textContactsStatus);
         checkPermissionStatus(Manifest.permission.WRITE_CONTACTS, textWriteContactsStatus);
+        
+        // Check POST_NOTIFICATIONS (Android 13+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            checkPermissionStatus(Manifest.permission.POST_NOTIFICATIONS, textNotificationStatus);
+        } else {
+            // Android < 13 không cần permission này
+            if (textNotificationStatus != null) {
+                textNotificationStatus.setText("✓ Không cần (Android < 13)");
+                textNotificationStatus.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+            }
+        }
         
         // Check special permissions
         checkSpecialPermissions();

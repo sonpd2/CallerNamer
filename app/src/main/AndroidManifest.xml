@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sonpd2.incomingcall">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
@@ -11,6 +10,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
+    <uses-permission android:name="android.permission.MANAGE_OWN_CALLS" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -23,7 +25,8 @@
         >
         <activity
             android:name="com.sonpd2.incomingcall.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:configChanges="uiMode">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,12 +37,14 @@
         <activity
             android:name="com.sonpd2.incomingcall.ApiConfigActivity"
             android:exported="false"
-            android:label="Cấu hình API" />
+            android:label="Cấu hình API"
+            android:configChanges="uiMode" />
 
         <activity
             android:name="com.sonpd2.incomingcall.LogViewerActivity"
             android:exported="false"
-            android:label="Xem Log" />
+            android:label="Xem Log"
+            android:configChanges="uiMode" />
 
         <receiver android:name="com.sonpd2.incomingcall.IncomingCallBroadcastReceiver"
             android:enabled="true"
