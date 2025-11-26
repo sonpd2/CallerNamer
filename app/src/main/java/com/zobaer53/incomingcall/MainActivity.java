@@ -7,6 +7,8 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textWriteContactsStatus;
     private TextView textSpecialStatus;
     private TextView textBatteryStatus;
+    private Button btnRequestBatteryOptimization;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,12 @@ public class MainActivity extends AppCompatActivity {
         textWriteContactsStatus = findViewById(R.id.textWriteContactsStatus);
         textSpecialStatus = findViewById(R.id.textSpecialStatus);
         textBatteryStatus = findViewById(R.id.textBatteryStatus);
+        btnRequestBatteryOptimization = findViewById(R.id.btnRequestBatteryOptimization);
+        
+        // Set click listener for battery optimization button
+        if (btnRequestBatteryOptimization != null) {
+            btnRequestBatteryOptimization.setOnClickListener(v -> requestBatteryOptimizationIfNeeded());
+        }
         
         getRuntimePermissions = findViewById(R.id.requestRuntimePermission);
         setOnGetPermissionsClickListener();
@@ -117,6 +126,12 @@ public class MainActivity extends AppCompatActivity {
         if (!runtimePermissionRequester.checkSelfPermissions(permissions)) {
             runtimePermissionRequester.requestPermissions();
         }
+        
+        // Tự động request bỏ qua battery optimization
+        requestBatteryOptimizationIfNeeded();
+        
+        // Khởi động foreground service để chạy nền
+        startForegroundService();
     }
 
     @Override
@@ -211,6 +226,42 @@ public class MainActivity extends AppCompatActivity {
         textBatteryStatus.setTextColor(isIgnoringBatteryOptimizations ? 
             getResources().getColor(android.R.color.holo_green_dark) : 
             getResources().getColor(android.R.color.holo_red_dark));
+        
+        // Hiển thị/ẩn nút request dựa trên trạng thái
+        if (btnRequestBatteryOptimization != null) {
+            btnRequestBatteryOptimization.setVisibility(isIgnoringBatteryOptimizations ? View.GONE : View.VISIBLE);
+        }
+    }
+    
+    private void requestBatteryOptimizationIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+            if (powerManager != null && !powerManager.isIgnoringBatteryOptimizations(getPackageName())) {
+                try {
+                    Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                    intent.setData(Uri.parse("package:" + getPackageName()));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    // Nếu không thể mở dialog, mở settings trực tiếp
+                    try {
+                        Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                        startActivity(intent);
+                    } catch (Exception ex) {
+                        // Ignore
+                    }
+                }
+            }
+        }
+    }
+    
+    private void startForegroundService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent serviceIntent = new Intent(this, CallMonitorService.class);
+            startForegroundService(serviceIntent);
+        } else {
+            Intent serviceIntent = new Intent(this, CallMonitorService.class);
+            startService(serviceIntent);
+        }
     }
 
     private void setGetSpecialPermissionsVisibility(Boolean hide) {
