@@ -1,4 +1,4 @@
-package com.zobaer53.incomingcall;
+package com.sonpd2.incomingcall;
 
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -69,7 +69,7 @@ public class LogViewerActivity extends AppCompatActivity {
             // Đọc từ cuối lên để lấy log mới nhất
             while ((line = bufferedReader.readLine()) != null && lineCount < maxLines) {
                 // Lọc log của app
-                if (line.contains("ducdv") || line.contains("com.zobaer53.incomingcall")) {
+                if (line.contains("ducdv") || line.contains("com.sonpd2.incomingcall")) {
                     log.insert(0, line + "\n");
                     lineCount++;
                 }

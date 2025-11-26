@@ -1,4 +1,4 @@
-package com.zobaer53.incomingcall;
+package com.sonpd2.incomingcall;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.zobaer53.incomingcall", appContext.getPackageName());
+        assertEquals("com.sonpd2.incomingcall", appContext.getPackageName());
     }
 }

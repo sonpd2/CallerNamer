@@ -30,7 +30,7 @@ if %ERRORLEVEL% EQU 0 (
     echo SUCCESS: APK installed successfully!
     echo.
     echo To launch the app, run:
-    echo   adb shell am start -n com.zobaer53.incomingcall/.MainActivity
+    echo   adb shell am start -n com.sonpd2.incomingcall/.MainActivity
 ) else (
     echo.
     echo ERROR: Installation failed!

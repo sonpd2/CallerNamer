@@ -1,4 +1,4 @@
-package com.zobaer53.incomingcall;
+package com.sonpd2.incomingcall;
 
 import android.Manifest;
 import android.app.NotificationChannel;
@@ -28,9 +28,9 @@ import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 
-import com.zobaer53.incomingcall.permission.GoingToSettingsSnackbar;
-import com.zobaer53.incomingcall.permission.RuntimePermissionRequester;
-import com.zobaer53.incomingcall.permission.SpecialPermissionRequester;
+import com.sonpd2.incomingcall.permission.GoingToSettingsSnackbar;
+import com.sonpd2.incomingcall.permission.RuntimePermissionRequester;
+import com.sonpd2.incomingcall.permission.SpecialPermissionRequester;
 
 public class MainActivity extends AppCompatActivity {
 

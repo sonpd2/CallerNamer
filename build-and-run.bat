@@ -36,7 +36,7 @@ echo.
 
 :: Chạy ứng dụng
 echo [3/4] Starting application...
-adb shell am start -n com.zobaer53.incomingcall/.MainActivity
+adb shell am start -n com.sonpd2.incomingcall/.MainActivity
 if %ERRORLEVEL% NEQ 0 (
     echo WARNING: Could not start application. It may already be running.
 )
@@ -48,7 +48,7 @@ echo.
 echo Application installed and launched successfully!
 echo.
 echo To view logs, run:
-echo   adb logcat ^| findstr "com.zobaer53.incomingcall"
+echo   adb logcat ^| findstr "com.sonpd2.incomingcall"
 echo.
 pause
 

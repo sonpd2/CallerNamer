@@ -188,14 +188,14 @@ adb install -r app\build\outputs\apk\debug\app-debug.apk
 ```powershell
 # Chạy ứng dụng (build, cài đặt và mở)
 .\gradlew installDebug
-adb shell am start -n com.zobaer53.incomingcall/.MainActivity
+adb shell am start -n com.sonpd2.incomingcall/.MainActivity
 ```
 
 Hoặc gộp thành một lệnh:
 
 ```powershell
 # Build, cài đặt và chạy
-.\gradlew installDebug && adb shell am start -n com.zobaer53.incomingcall/.MainActivity
+.\gradlew installDebug && adb shell am start -n com.sonpd2.incomingcall/.MainActivity
 ```
 
 #### 7. Xem Logs (Logcat)
@@ -208,7 +208,7 @@ adb logcat
 adb logcat -s "AndroidRuntime:*" "*:E"
 
 # Lọc logs theo package name
-adb logcat | findstr "com.zobaer53.incomingcall"
+adb logcat | findstr "com.sonpd2.incomingcall"
 
 # Xóa logs cũ và xem logs mới
 adb logcat -c && adb logcat
@@ -218,7 +218,7 @@ adb logcat -c && adb logcat
 
 ```powershell
 # Gỡ cài đặt ứng dụng
-adb uninstall com.zobaer53.incomingcall
+adb uninstall com.sonpd2.incomingcall
 ```
 
 ### Lệnh Nâng Cao
@@ -263,13 +263,13 @@ adb shell pm list packages | findstr "zobaer53"
 
 ```powershell
 # Cấp quyền READ_PHONE_STATE
-adb shell pm grant com.zobaer53.incomingcall android.permission.READ_PHONE_STATE
+adb shell pm grant com.sonpd2.incomingcall android.permission.READ_PHONE_STATE
 
 # Cấp quyền READ_CALL_LOG
-adb shell pm grant com.zobaer53.incomingcall android.permission.READ_CALL_LOG
+adb shell pm grant com.sonpd2.incomingcall android.permission.READ_CALL_LOG
 
 # Cấp quyền READ_CONTACTS
-adb shell pm grant com.zobaer53.incomingcall android.permission.READ_CONTACTS
+adb shell pm grant com.sonpd2.incomingcall android.permission.READ_CONTACTS
 
 # Lưu ý: Quyền SYSTEM_ALERT_WINDOW cần cấp thủ công trên thiết bị
 ```
@@ -288,13 +288,13 @@ adb devices
 
 **Bước 3: Chạy ứng dụng**
 ```powershell
-adb shell am start -n com.zobaer53.incomingcall/.MainActivity
+adb shell am start -n com.sonpd2.incomingcall/.MainActivity
 ```
 
 **Bước 4: Xem logs (tùy chọn)**
 ```powershell
 # Mở terminal mới để xem logs
-adb logcat | findstr "com.zobaer53.incomingcall"
+adb logcat | findstr "com.sonpd2.incomingcall"
 ```
 
 ### Script Batch (Windows)
@@ -308,7 +308,7 @@ call gradlew.bat clean installDebug
 if %ERRORLEVEL% EQU 0 (
     echo Installation successful!
     echo Starting application...
-    adb shell am start -n com.zobaer53.incomingcall/.MainActivity
+    adb shell am start -n com.sonpd2.incomingcall/.MainActivity
     echo Done!
 ) else (
     echo Build failed!
@@ -346,7 +346,7 @@ Sử dụng: Chạy `build-and-run.bat` trong thư mục project.
 
 ## Thông Tin Project
 
-- **Package Name**: `com.zobaer53.incomingcall`
+- **Package Name**: `com.sonpd2.incomingcall`
 - **Min SDK**: 21
 - **Target SDK**: 31
 - **Compile SDK**: 31

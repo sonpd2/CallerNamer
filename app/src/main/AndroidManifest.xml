@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zobaer53.incomingcall">
+    package="com.sonpd2.incomingcall">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
@@ -22,7 +22,7 @@
         android:theme="@style/Theme.IncomingCallHandler"
         >
         <activity
-            android:name="com.zobaer53.incomingcall.MainActivity"
+            android:name="com.sonpd2.incomingcall.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,16 +32,16 @@
         </activity>
 
         <activity
-            android:name="com.zobaer53.incomingcall.ApiConfigActivity"
+            android:name="com.sonpd2.incomingcall.ApiConfigActivity"
             android:exported="false"
             android:label="Cấu hình API" />
 
         <activity
-            android:name="com.zobaer53.incomingcall.LogViewerActivity"
+            android:name="com.sonpd2.incomingcall.LogViewerActivity"
             android:exported="false"
             android:label="Xem Log" />
 
-        <receiver android:name="com.zobaer53.incomingcall.IncomingCallBroadcastReceiver"
+        <receiver android:name="com.sonpd2.incomingcall.IncomingCallBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -50,7 +50,7 @@
         </receiver>
 
         <service
-            android:name="com.zobaer53.incomingcall.CallMonitorService"
+            android:name="com.sonpd2.incomingcall.CallMonitorService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="phoneCall" />
