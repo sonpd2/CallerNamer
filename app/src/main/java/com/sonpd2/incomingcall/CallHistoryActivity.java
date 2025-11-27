@@ -1,15 +1,14 @@
 package com.sonpd2.incomingcall;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
-public class ApiConfigActivity extends AppCompatActivity {
+public class CallHistoryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +17,7 @@ public class ApiConfigActivity extends AppCompatActivity {
         // Force light mode, disable dark mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         
-        setContentView(R.layout.activity_api_config);
+        setContentView(R.layout.activity_call_history);
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -28,16 +27,13 @@ public class ApiConfigActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         toolbar.setNavigationOnClickListener(v -> finish());
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // Xử lý khi nhấn nút back trên toolbar
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
+        
+        // Load fragment lịch sử
+        if (savedInstanceState == null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragmentContainer, new CallHistoryFragment());
+            transaction.commit();
         }
-        return super.onOptionsItemSelected(item);
     }
 }
 

@@ -3,9 +3,12 @@ package com.sonpd2.incomingcall;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,7 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CallHistoryFragment extends Fragment {
@@ -25,6 +30,8 @@ public class CallHistoryFragment extends Fragment {
     private CallHistoryAdapter adapter;
     private TextView textEmpty;
     private MaterialButton btnClearHistory;
+    private TextInputEditText searchEditText;
+    private List<CallHistoryHelper.CallHistoryItem> allHistory;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,6 +42,7 @@ public class CallHistoryFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewHistory);
         textEmpty = view.findViewById(R.id.textEmpty);
         btnClearHistory = view.findViewById(R.id.btnClearHistory);
+        searchEditText = view.findViewById(R.id.searchEditText);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         adapter = new CallHistoryAdapter();
@@ -46,15 +54,75 @@ public class CallHistoryFragment extends Fragment {
             Toast.makeText(requireContext(), "Đã xóa lịch sử", Toast.LENGTH_SHORT).show();
         });
 
+        // Thiết lập tìm kiếm
+        setupSearch();
+
         loadHistory();
 
         return view;
     }
 
     private void loadHistory() {
-        List<CallHistoryHelper.CallHistoryItem> history = historyHelper.getHistory();
-        adapter.setHistory(history);
-        textEmpty.setVisibility(history.isEmpty() ? View.VISIBLE : View.GONE);
+        allHistory = historyHelper.getHistory();
+        filterHistory("");
+    }
+
+    private void setupSearch() {
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterHistory(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        // Xử lý khi nhấn nút tìm kiếm trên bàn phím
+        searchEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                filterHistory(searchEditText.getText().toString());
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void filterHistory(String query) {
+        if (allHistory == null) {
+            allHistory = historyHelper.getHistory();
+        }
+
+        List<CallHistoryHelper.CallHistoryItem> filteredList = new ArrayList<>();
+
+        if (query == null || query.trim().isEmpty()) {
+            // Nếu không có query, hiển thị tất cả
+            filteredList.addAll(allHistory);
+        } else {
+            // Lọc theo số điện thoại
+            String searchQuery = query.trim().toLowerCase();
+            String normalizedQuery = searchQuery.replaceAll("[^0-9]", "");
+
+            for (CallHistoryHelper.CallHistoryItem item : allHistory) {
+                // Tìm kiếm trong số điện thoại
+                String phoneNumber = item.phoneNumber != null ? item.phoneNumber : "";
+                String normalizedPhone = phoneNumber.replaceAll("[^0-9]", "");
+
+                // Kiểm tra nếu số điện thoại chứa query (tìm kiếm một phần)
+                if (normalizedPhone.contains(normalizedQuery) || 
+                    phoneNumber.toLowerCase().contains(searchQuery)) {
+                    filteredList.add(item);
+                }
+            }
+        }
+
+        adapter.setHistory(filteredList);
+        textEmpty.setVisibility(filteredList.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -72,9 +140,9 @@ public class CallHistoryFragment extends Fragment {
         }
 
         public void refresh() {
-            List<CallHistoryHelper.CallHistoryItem> newHistory = historyHelper.getHistory();
-            setHistory(newHistory);
-            textEmpty.setVisibility(newHistory.isEmpty() ? View.VISIBLE : View.GONE);
+            allHistory = historyHelper.getHistory();
+            String currentQuery = searchEditText != null ? searchEditText.getText().toString() : "";
+            filterHistory(currentQuery);
         }
 
         @Override

@@ -38,6 +38,13 @@
             android:name="com.sonpd2.incomingcall.ApiConfigActivity"
             android:exported="false"
             android:label="Cấu hình API"
+            android:configChanges="uiMode"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="com.sonpd2.incomingcall.CallHistoryActivity"
+            android:exported="false"
+            android:label="Lịch sử"
             android:configChanges="uiMode" />
 
         <activity

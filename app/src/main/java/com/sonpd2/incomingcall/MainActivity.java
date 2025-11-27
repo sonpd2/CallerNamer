@@ -13,11 +13,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
@@ -25,9 +29,13 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.sonpd2.incomingcall.permission.GoingToSettingsSnackbar;
 import com.sonpd2.incomingcall.permission.RuntimePermissionRequester;
@@ -112,11 +120,10 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
         
-        // Lịch sử (mở tab lịch sử trong ApiConfigActivity)
+        // Lịch sử (mở activity lịch sử riêng)
         MaterialCardView cardHistory = findViewById(R.id.cardHistory);
         cardHistory.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ApiConfigActivity.class);
-            intent.putExtra("tab", 1); // Tab lịch sử
+            Intent intent = new Intent(MainActivity.this, CallHistoryActivity.class);
             startActivity(intent);
         });
         
@@ -127,6 +134,10 @@ public class MainActivity extends AppCompatActivity {
             getRuntimePermissions.setVisibility(View.VISIBLE);
             getSpecialPermissions.setVisibility(View.VISIBLE);
         });
+        
+        // Tìm kiếm
+        MaterialCardView cardSearch = findViewById(R.id.cardSearch);
+        cardSearch.setOnClickListener(v -> showSearchDialog());
 
         if (!specialPermissionRequester.checkSystemAlertWindowPermission()) {
             specialPermissionRequester.requestSystemAlertWindowPermission();
@@ -345,5 +356,155 @@ public class MainActivity extends AppCompatActivity {
                 .setPriority(NotificationCompat.PRIORITY_LOW);
         
         mNotificationManager.notify(1, builder.build());
+    }
+    
+    private void showSearchDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_search_input, null);
+        
+        TextInputEditText editPhoneNumber = dialogView.findViewById(R.id.editPhoneNumber);
+        MaterialButton btnSearch = dialogView.findViewById(R.id.btnSearch);
+        MaterialButton btnCancel = dialogView.findViewById(R.id.btnCancel);
+        
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                .setTitle("Tìm kiếm số điện thoại")
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+        
+        // Xử lý khi nhấn Enter
+        editPhoneNumber.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                String phoneNumber = editPhoneNumber.getText().toString().trim();
+                if (!phoneNumber.isEmpty()) {
+                    dialog.dismiss();
+                    searchByApi(phoneNumber);
+                }
+                return true;
+            }
+            return false;
+        });
+        
+        btnSearch.setOnClickListener(v -> {
+            String phoneNumber = editPhoneNumber.getText().toString().trim();
+            if (phoneNumber.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập số điện thoại", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            dialog.dismiss();
+            searchByApi(phoneNumber);
+        });
+        
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        
+        dialog.show();
+    }
+    
+    private void searchByApi(String phoneNumber) {
+        // Ẩn bàn phím
+        View view = getCurrentFocus();
+        if (view != null) {
+            android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) 
+                getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+        
+        // Hiển thị loading
+        Toast.makeText(this, "Đang tìm kiếm...", Toast.LENGTH_SHORT).show();
+        
+        // Gọi API
+        ApiCaller.searchPhoneNumber(this, phoneNumber, new ApiCaller.ApiCallback() {
+            @Override
+            public void onSuccess(String name, String position, String company, List<String> emails) {
+                // Lưu vào lịch sử
+                CallHistoryHelper historyHelper = new CallHistoryHelper(MainActivity.this);
+                historyHelper.addHistory(phoneNumber, name, position, company, emails, true);
+                
+                // Hiển thị dialog kết quả
+                showSearchResultDialog(phoneNumber, name, position, company, emails);
+            }
+            
+            @Override
+            public void onError(String errorMessage) {
+                // Lưu vào lịch sử (không tìm thấy)
+                CallHistoryHelper historyHelper = new CallHistoryHelper(MainActivity.this);
+                historyHelper.addHistory(phoneNumber, "", "", "", new ArrayList<>(), false);
+                
+                // Hiển thị lỗi
+                Toast.makeText(MainActivity.this, "Lỗi: " + errorMessage, Toast.LENGTH_LONG).show();
+            }
+            
+            @Override
+            public void onNotFound() {
+                // Lưu vào lịch sử (không tìm thấy)
+                CallHistoryHelper historyHelper = new CallHistoryHelper(MainActivity.this);
+                historyHelper.addHistory(phoneNumber, "", "", "", new ArrayList<>(), false);
+                
+                // Hiển thị thông báo
+                Toast.makeText(MainActivity.this, "Không tìm thấy thông tin", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    private void showSearchResultDialog(String phoneNumber, String name, String position, String company, List<String> emails) {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_search_result, null);
+        
+        TextView textPhoneNumber = dialogView.findViewById(R.id.textDialogPhoneNumber);
+        TextView textName = dialogView.findViewById(R.id.textDialogName);
+        TextView textPosition = dialogView.findViewById(R.id.textDialogPosition);
+        TextView textCompany = dialogView.findViewById(R.id.textDialogCompany);
+        TextView textEmails = dialogView.findViewById(R.id.textDialogEmails);
+        MaterialButton btnClose = dialogView.findViewById(R.id.btnDialogClose);
+        MaterialButton btnAddContact = dialogView.findViewById(R.id.btnDialogAddContact);
+        
+        textPhoneNumber.setText(phoneNumber);
+        textName.setText(name.isEmpty() ? "Không có tên" : name);
+        textPosition.setText(position.isEmpty() ? "Không có chức vụ" : position);
+        textCompany.setText(company.isEmpty() ? "Không có công ty" : company);
+        
+        if (emails != null && !emails.isEmpty()) {
+            StringBuilder emailsText = new StringBuilder("Email: ");
+            for (int i = 0; i < emails.size(); i++) {
+                if (i > 0) emailsText.append(", ");
+                emailsText.append(emails.get(i));
+            }
+            textEmails.setText(emailsText.toString());
+            textEmails.setVisibility(View.VISIBLE);
+        } else {
+            textEmails.setVisibility(View.GONE);
+        }
+        
+        // Kiểm tra quyền và hiển thị nút thêm vào danh bạ
+        boolean hasPermission = ContextCompat.checkSelfPermission(this, 
+                Manifest.permission.WRITE_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+        
+        if (hasPermission) {
+            ContactHelper contactHelper = new ContactHelper(this);
+            boolean exists = contactHelper.isContactExists(phoneNumber);
+            
+            if (!exists) {
+                btnAddContact.setVisibility(View.VISIBLE);
+                btnAddContact.setOnClickListener(v -> {
+                    String contactName = name.isEmpty() ? phoneNumber : name;
+                    boolean success = contactHelper.addContact(contactName, phoneNumber, company, position, emails);
+                    
+                    if (success) {
+                        Toast.makeText(this, "Đã thêm vào danh bạ", Toast.LENGTH_SHORT).show();
+                        btnAddContact.setVisibility(View.GONE);
+                    } else {
+                        Toast.makeText(this, "Lỗi khi thêm vào danh bạ", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+        
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                .setView(dialogView)
+                .create();
+        
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+        
+        dialog.show();
     }
 }
